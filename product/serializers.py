@@ -21,7 +21,7 @@ class ReviewListSerializer(serializers.ModelSerializer):
     product = serializers.ReadOnlyField(source='product.title')
     class Meta:
         model = Review
-        fields = ['text', 'product', 'stars', 'average_rating']
+        fields = ['id', 'text', 'product', 'stars', 'average_rating']
 
 
 class CategoryValidateSerializer(serializers.Serializer):
@@ -40,17 +40,20 @@ class ProductValidateSerializer(serializers.Serializer):
             raise ValidationError('Category does not exist!')
         return category_id
 
-class ReviewValidateSerializer(serializers.Serializer):
-    text = serializers.CharField(min_length=1, max_length=255)
+class ReviewValidateSerializer(serializers.ModelSerializer):
     product_id = serializers.IntegerField()
-    stars = serializers.IntegerField(min_value=1, max_value=5)
-
+    class Meta:
+        model = Review
+        fields = ['text', 'product_id', 'stars']
     def validate_product_id(self, product_id):
         try:
             Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             raise ValidationError('Product does not exist!')
         return product_id
+    def create(self, validated_data):
+        return Review.objects.create(**validated_data)
+
 
 
 
