@@ -16,7 +16,7 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductListSerializer
 
-class ReviewViewSer(ModelViewSet):
+class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewListSerializer
 
